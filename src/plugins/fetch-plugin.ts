@@ -10,14 +10,14 @@ export const FetchPlugin = (inputCode: string) => {
     return {
         name: 'fetch-plugin',
         setup(build: esbuild.PluginBuild) {
-            build.onLoad({filter: /.*/}, async (args: any) => {
+            build.onLoad({filter: /(^index\.js$)/}, () => {
+                return {
+                    loader: 'jsx',
+                    contents: inputCode
+                };
+            });
 
-                if (args.path === 'index.js') {
-                    return {
-                        loader: 'jsx',
-                        contents: inputCode
-                    };
-                }
+            build.onLoad({filter: /.*/}, async (args: any) => {
                 // check to see if file already fetched. If so => in the cache //
                 // if in the cache, return that version immediately //
 
@@ -26,6 +26,29 @@ export const FetchPlugin = (inputCode: string) => {
                 if (cacheResult) {
                     return cacheResult;
                 }
+            });
+
+            build.onLoad({filter: /.css$/}, async (args: any) => {
+
+                const {data, request} = await axios.get(args.path);
+                const escaped = data.replace(/\n/g, '').replace(/"/g, '\\"').replace(/'/g, "\\'");
+                const contents = `
+                    const style = document.createElement('style');
+                    style.innerText = '${escaped}';
+                    document.head.appendChild(style);
+                    `;
+
+                const result: esbuild.OnLoadResult = {
+                    loader: 'jsx',
+                    contents,
+                    resolveDir: new URL("./", request.responseURL).pathname,
+                };
+                // store response in cache //
+                await fileCache.setItem(args.path, result);
+                return result;
+            });
+
+            build.onLoad({filter: /.*/}, async (args: any) => {
 
                 const {data, request} = await axios.get(args.path);
 
@@ -36,6 +59,7 @@ export const FetchPlugin = (inputCode: string) => {
                 };
                 // store response in cache //
                 await fileCache.setItem(args.path, result);
+                return result;
             });
         }
     }
