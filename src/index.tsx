@@ -52,22 +52,22 @@ const App = () => {
 
     const baseHtml = `
     <html> 
-    <head>
-    <body>
-        <div id="root"></div>
-    <script>
-    window.addEventListener('message', (event) => {
-        try {
-            eval(event.data);
-        } catch (err) {
-            const root = document.querySelector("#root");
-            root.innerHTML = '<div style="color:red;">' + err + '</div>';
-            throw err;
-        }
-    }, false);
-    </script>
-    </body>
-    </head>
+        <head>
+        <body>
+            <div id="root"></div>
+                <script>
+                window.addEventListener('message', (event) => {
+                    try {
+                        eval(event.data);
+                    } catch (err) {
+                        const root = document.querySelector("#root");
+                        root.innerHTML = '<div style="color:red;">' + err + '</div>';
+                        throw err;
+                    }
+                }, false);
+                </script>
+        </body>
+        </head>
     </html>
     `;
 
