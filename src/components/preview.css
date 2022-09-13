@@ -2,11 +2,10 @@
     position: relative;
     height: 100%;
     flex-grow: 1;
-    width: 50%;
 }
 .preview-wrapper iframe{
     height: 100%;
-    width: 100vh;
+    width: 100%;
 }
 .react-draggable-transparent-selection .preview-wrapper:after {
     content: '';
