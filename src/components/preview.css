@@ -16,3 +16,9 @@
     left: 0;
     background-color: #37414b;
 }
+.preview-error {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: red;
+}
