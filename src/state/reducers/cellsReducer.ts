@@ -19,7 +19,7 @@ const initialState: CellState = {
     data: {}
 }
 
-const reducer = produce((state: CellState = initialState, action: Action): CellState | null => {
+const cellsReducer = produce((state: CellState = initialState, action: Action): CellState => {
     switch (action.type) {
         case ActionType.MOVE_CELL:
             const { direction } = action.payload;
@@ -64,10 +64,10 @@ const reducer = produce((state: CellState = initialState, action: Action): CellS
         default:
             return state;
     }
-});
+}, initialState);
 
 const randomId = () => {
     return Math.random().toString(36).substring(2,5);
 }
 
-export default reducer;
+export default cellsReducer;
